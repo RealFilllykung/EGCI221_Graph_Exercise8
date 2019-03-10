@@ -1,0 +1,16 @@
+A B 56
+A C 96
+A D 78
+B D 18
+D F 112
+B F 208
+B E 110
+E F 16
+E G 46
+G F 20
+G H 40
+F H 62
+E I 108
+I H 29
+I J 21
+J H 56
