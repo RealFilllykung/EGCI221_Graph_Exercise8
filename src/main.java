@@ -31,6 +31,7 @@ class MyDirectWeightGraph
 
     //String for keeping the name of file
     private String fileName;
+    private Scanner scanFile;
 
     private void PrintCityList() {
         ArrayList PrintCityList = new ArrayList(CityList);
@@ -44,7 +45,7 @@ class MyDirectWeightGraph
     MyDirectWeightGraph()
     {
         boolean askFile = true;
-        Scanner scanFile = null;
+        scanFile = null;
 
         //Ask for the file input
         while(askFile)
@@ -80,6 +81,7 @@ class MyDirectWeightGraph
 
             Graphs.addEdgeWithVertices(G,city1,city2,time);
         }
+        scanFile.reset();
 
         //PrintCityList();  //Just for check that is there any duplicate city inside the list
 
@@ -130,10 +132,9 @@ class MyDirectWeightGraph
             System.out.printf("If %s is closed\r\n",G.getEdgeSource(e));
             String tempc1 = G.getEdgeSource(e);
             String tempc2 = G.getEdgeTarget(e);
-            double tempdis = G.getEdgeWeight(e);
 
-            G.removeEdge(e);
-            //G.removeVertex(G.getEdgeSource(e));
+            //G.removeEdge(e);
+            G.removeVertex(G.getEdgeSource(e));
 
             List<DefaultWeightedEdge> sp2 = DijkstraShortestPath.findPathBetween(G,c1,c2);
 
@@ -147,8 +148,31 @@ class MyDirectWeightGraph
                 System.out.printf("%s -> %s (%d)    ",G.getEdgeSource(e2),G.getEdgeTarget(e2),(int)G.getEdgeWeight(e2));
             }
             System.out.printf("\n\n");
+            //Graphs.addEdgeWithVertices(G,tempc1,tempc2,tempDistance2);
 
-            Graphs.addEdgeWithVertices(G,tempc1,tempc2,tempdis);
+            try
+            {
+                scanFile = new Scanner(new File(fileName));
+                while(scanFile.hasNext())
+                {
+                    String line = scanFile.nextLine();
+                    String buf[] = line.split(" ");
+
+                    String city1 = buf[0];
+                    String city2 = buf[1];
+                    int time = Integer.parseInt(buf[2]);
+
+                    CityList.add(city1);
+                    CityList.add(city2);
+
+                    Graphs.addEdgeWithVertices(G,city1,city2,time);
+                }
+            }
+            catch (Exception er)
+            {
+                System.err.println(er);
+            }
+
 
         }
     }
