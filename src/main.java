@@ -1,29 +1,15 @@
 import java.io.*;
 import java.util.*;
 
-import com.sun.javafx.geom.Edge;
 import org.jgrapht.*;
 import org.jgrapht.alg.DijkstraShortestPath;
-import org.jgrapht.alg.KruskalMinimumSpanningTree;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
-
-class city {
-    private String name;
-
-    city(String n) {
-        name = n;
-    }
-
-    public String getName() {
-        return name;
-    }
-}
 
 class MyDirectWeightGraph
 {
     private HashSet <String> CityList = new HashSet<String>();
-    //We use HashSet to keep city list is because there are some of the duplicate city inside the file
+    //We are using HashSet to keep city list is because there are some of the duplicate city inside the file
 
     //Use SimpleWeightedGraph (for tbe sake of using direct property and collecting the weight of each nodes - nodes)
     private SimpleWeightedGraph<String, DefaultWeightedEdge> SWG = new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
@@ -32,14 +18,6 @@ class MyDirectWeightGraph
     //String for keeping the name of file
     private String fileName;
     private Scanner scanFile;
-
-    private void PrintCityList() {
-        ArrayList PrintCityList = new ArrayList(CityList);
-        for(int i = 0; i < PrintCityList.size(); i++)
-        {
-            System.out.println(PrintCityList.get(i));
-        }
-    }
 
     //The constructor of the graph
     MyDirectWeightGraph()
@@ -50,8 +28,7 @@ class MyDirectWeightGraph
         //Ask for the file input
         while(askFile)
         {
-            try
-            {
+            try {
                 System.out.print("Enter graph file: ");
                 Scanner scan = new Scanner(System.in);
                 fileName = scan.next();
@@ -60,15 +37,13 @@ class MyDirectWeightGraph
 
                 askFile = false;
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 System.err.println(e);
             }
         }
 
         //Put tie information into the graph
-        while(scanFile.hasNext())
-        {
+        while(scanFile.hasNext()) {
             String line = scanFile.nextLine();
             String buf[] = line.split(" ");
 
@@ -81,9 +56,9 @@ class MyDirectWeightGraph
 
             Graphs.addEdgeWithVertices(G,city1,city2,time);
         }
-        scanFile.reset();
 
-        //PrintCityList();  //Just for check that is there any duplicate city inside the list
+        //Reset the position of the file pointer
+        scanFile.reset();
 
         //Asking for shortest path phase
         Scanner scanInput = new Scanner(System.in);
@@ -116,26 +91,23 @@ class MyDirectWeightGraph
             if it reaches the end city (which we don't want to continue the loop on that phase), it will stop the loop
          */
         int countSP = 0;
+
         //This loop is for finding the new path if e path is close
         for(DefaultWeightedEdge e : sp) {
-            if (countSP == 0)
-            {
+            if (countSP == 0) {
                 countSP++;
                 continue;
             }
-            else if (countSP == sp.size())
-            {
+            else if (countSP == sp.size()) {
                 break;
             }
 
             countSP++;
             System.out.printf("If %s is closed\r\n",G.getEdgeSource(e));
-            String tempc1 = G.getEdgeSource(e);
-            String tempc2 = G.getEdgeTarget(e);
 
-            //G.removeEdge(e);
             G.removeVertex(G.getEdgeSource(e));
 
+            //Finding the new fastest path
             List<DefaultWeightedEdge> sp2 = DijkstraShortestPath.findPathBetween(G,c1,c2);
 
             int tempDistance2 = 0;
@@ -148,13 +120,11 @@ class MyDirectWeightGraph
                 System.out.printf("%s -> %s (%d)    ",G.getEdgeSource(e2),G.getEdgeTarget(e2),(int)G.getEdgeWeight(e2));
             }
             System.out.printf("\n\n");
-            //Graphs.addEdgeWithVertices(G,tempc1,tempc2,tempDistance2);
 
-            try
-            {
+            //Try to reopen the file and put all information into the graph again
+            try {
                 scanFile = new Scanner(new File(fileName));
-                while(scanFile.hasNext())
-                {
+                while(scanFile.hasNext()) {
                     String line = scanFile.nextLine();
                     String buf[] = line.split(" ");
 
@@ -168,16 +138,14 @@ class MyDirectWeightGraph
                     Graphs.addEdgeWithVertices(G,city1,city2,time);
                 }
             }
-            catch (Exception er)
-            {
+            catch (Exception er) {
                 System.err.println(er);
             }
-
-
         }
     }
 }
 
+//Main class for this project is just create the new MyDirectWeightGraph object
 public class main {
     public static void main(String[] argv)
     {
